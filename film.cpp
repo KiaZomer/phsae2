@@ -31,12 +31,11 @@ void Film::changeDirector(string _director){
     director = _director;
 }
 
-int Film::showNumOfBuyers(){ return numOfFilmsBuyers; }
-int Film::addBuyers() { numOfFilmsBuyers++; }
-
 int Film::numOfMsgsOfThisCm(int j){
     return comments[j]->numOfMsgs();
 }
+
+void Film::addBuyersNum(){ numOfBuyers++; }
 
 int Film::showPublisherId(){ return PublisherID; }
 
@@ -107,12 +106,12 @@ bool Film::isWeak(){ return rate < 5 && rate>=0 ; }
 int Film::showCommentorOfThisCm(int j){
     return comments[j]->showCommenter();
 }
+int Film::numOfBuyer(){ return numOfBuyers; }
 bool Film::hasThisCmId(int cmID){
     for (int i=0;i<comments.size();i++)
         if (comments[i]->showCommentId() == cmID)
             return true;
 }
-
 int Film::whichFilmHasThisId(int filmID,vector<Film*> films){
     for (int i=0;films.size();i++)
         if (films[i]->ShowFilmId() == filmID)

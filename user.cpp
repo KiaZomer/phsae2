@@ -216,7 +216,7 @@ int User::showPriceFilm(int filmID){
             return filmsPublished[i]->showPrice();
 }
 
-int User::showNumOfBuyersOfThisFilm(int i) { return filmsPublished[i]->showNumOfBuyers(); }
+int User::showNumOfBuyersOfThisFilm(int i) { return filmsPublished[i]->numOfBuyer(); }
 
 void User::costMoney(int _money) { money -= _money; }
 string User::showPublisherOfFilmWithFilmID(int filmID){

@@ -748,7 +748,8 @@ void NetflixSystem::rateOnFilm(string line){
     if (stof(whatYouWant(line,SCORE)) > 10 || stof(whatYouWant(line,SCORE)) < 0) throw BadRequest();
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
      addRateToMovie(stoi(whatYouWant(line,FILM_ID)),stof(whatYouWant(line,SCORE)),users[whoIsInSystem()]->showUserID());
-    users[whoIsInSystem()]->addRateToMovie(stoi(whatYouWant(line,FILM_ID)),stof(whatYouWant(line,SCORE)),users[whoIsInSystem()]->showUserID());
+    users[whoIsInSystem()]->addRateToMovie(stoi(whatYouWant(line,FILM_ID)),
+    stof(whatYouWant(line,SCORE)),users[whoIsInSystem()]->showUserID());
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf("User " +
      users[whoIsInSystem()]->showUserName() + " with id " +
         to_string(users[whoIsInSystem()]->showUserID()) + " rate your film " +
@@ -865,16 +866,12 @@ void NetflixSystem::showDetailsOfFilm(string line){
     vector<Film*> filmsForRankRate;
     int which = 0;
     rateBasedOnRecommendation(filmsForRankRate,line,which);
-
-    // for (int num=0;num<users.size();num++)
-    //     if (isPublisher(num))
-    //         for (int i=0;i<users[num]->numOfFilms();i++)
-    //             if (users[num]->thisFilmHasntDeleted(i))
-    //                 if (users[num]->showFilmId(i) != stoi(whatYouWant(line,FILM_ID)))
-    //                     filmsForRankRate.push_back(users[num]->returnFilms(i));
-    // sort(filmsForRankRate.begin(), filmsForRankRate.end(), [](Film* a, Film *b){
-    //     return a->showRate() > b->showRate();
-    // });
+    for (int i=0;i<filmsForRankRate.size();i++)
+        for (int j=0;j<filmsForRankRate[i]->numOfBuyer();j++)                
+            if (filmsForRankRate[i]->ShowFilmId() == users[whoIsInSystem()]->showFilmBoughtId(j)){
+                filmsForRankRate.erase(filmsForRankRate.begin() + i);
+                i--;
+            }
     if (filmsForRankRate.size() > 4)
         for (int i=0;i<4;i++){
             cout << i+1 << ". " << filmsForRankRate[i]->ShowFilmId() << " | " << filmsForRankRate[i]->showName() <<

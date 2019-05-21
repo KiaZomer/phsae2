@@ -41,9 +41,9 @@ public:
     bool hasThisCmId(int cmID);
     std::string showCM(int cm, int msg);
     int numOfMsgsOfThisCm(int j);
-    int showNumOfBuyers();
-    int addBuyers();
     int whichFilmHasThisId(int filmID,std::vector<Film*> films);
+    int numOfBuyer();
+    void addBuyersNum();
 private:
     std::map<int,int> Rates;
     std::string PublisherName;
@@ -51,7 +51,7 @@ private:
     std::string MovieName;
     std::string director;
     std::string summary;
-    int numOfFilmsBuyers = 0;
+    int numOfBuyers = 0;
     int filmID;
     int year;
     int length;
