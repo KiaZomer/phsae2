@@ -125,6 +125,10 @@ void User::addSalary(int i){
         money += 0.8 * filmsPublished[i]->showPrice();  
 }
 
+void User::costMoneyOfAdmin(int percent, int price){
+    money -= percent * price;
+}
+
 void User::Delete_Film_ID(int id){
     for (int i=0;i<filmsPublished.size();i++){
         if (filmsPublished[i]->ShowFilmId() == id)

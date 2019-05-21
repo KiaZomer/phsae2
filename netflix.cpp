@@ -665,7 +665,7 @@ void NetflixSystem::BuyFilm(string line){
         if (users[whoIsInSystem()]->showFilmBoughtId(i) == stoi(whatYouWant(line,FILM_ID)))
             checkHasBought = 1;
             if (checkHasBought == 0){
-        users[0]->addAmountMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));        
+        users[0]->addAmountMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));  
         users[whoIsInSystem()]->costMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));
         users[whoIsInSystem()]->addBuyListFilms(showPublisherOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
             showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))),showSummaryOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
@@ -765,12 +765,14 @@ void NetflixSystem::getSalary(string line){
     users[whoIsInSystem()]->setMoneyToZero();
     for (int i=0;i<users[whoIsInSystem()]->numOfFilms();i++){
         users[whoIsInSystem()]->addSalary(i);
-        if (users[whoIsInSystem()]->thisFilmIsStrong(i))
-            systemMoney -= 0.95 * users[whoIsInSystem()]->showFilmPricee(i);
+        if (users[whoIsInSystem()]->thisFilmIsStrong(i)){
+            cout << users[0]->showMoney() << " is money of admin " << endl;
+            users[0]->costMoneyOfAdmin(0.95,users[whoIsInSystem()]->showFilmPricee(i));
+        }
         if (users[whoIsInSystem()]->thisFilmIsNormal(i))
-            systemMoney -= 0.9 * users[whoIsInSystem()]->showFilmPricee(i);
+            users[0]->costMoneyOfAdmin(0.9,users[whoIsInSystem()]->showFilmPricee(i));
         if (users[whoIsInSystem()]->thisFilmIsWeak(i))
-            systemMoney -= 0.8 * users[whoIsInSystem()]->showFilmPricee(i);    
+            users[0]->costMoneyOfAdmin(0.8,users[whoIsInSystem()]->showFilmPricee(i));
     }
     cout << OK << endl;
 }
@@ -962,10 +964,8 @@ void NetflixSystem::showMoneyOfThisUser(string line){
     HashMd5 hash;
     hash.update(str.begin(),str.end());
     hash.hex_digest(str);
-    if (users[whoIsInSystem()]->showUserName() == ADMIN && users[whoIsInSystem()]->showPassword() == ADMIN){
-        users[whoIsInSystem()]->setNetworkMoneyToMoney(systemMoney);
-        cout << showSystemMoney() << endl;
-    }
+    if (users[whoIsInSystem()]->showUserName() == ADMIN && users[whoIsInSystem()]->showPassword() == ADMIN)
+        cout << users[0]->showMoney() << endl;
     else
        cout << users[whoIsInSystem()]->showMoney() << endl;
 }
