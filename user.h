@@ -90,7 +90,7 @@ public:
     int showNumOfBuyersOfThisFilm(int i);
     bool hasBougthThis2Films(int i,int j);
     void setNetworkMoneyToMoney(int _money);
-    void costMoneyOfAdmin(int percent,int price);
+    void costMoneyOfAdmin(float percent,int price);
 protected:
     int userID;
     std::string userName;

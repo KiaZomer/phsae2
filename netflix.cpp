@@ -765,24 +765,20 @@ void NetflixSystem::getSalary(string line){
     users[whoIsInSystem()]->setMoneyToZero();
     for (int i=0;i<users[whoIsInSystem()]->numOfFilms();i++){
         users[whoIsInSystem()]->addSalary(i);
-        if (users[whoIsInSystem()]->thisFilmIsStrong(i)){
-            cout << users[0]->showMoney() << " is money of admin " << endl;
+        if (users[whoIsInSystem()]->thisFilmIsStrong(i))
             users[0]->costMoneyOfAdmin(0.95,users[whoIsInSystem()]->showFilmPricee(i));
-        }
         if (users[whoIsInSystem()]->thisFilmIsNormal(i))
             users[0]->costMoneyOfAdmin(0.9,users[whoIsInSystem()]->showFilmPricee(i));
         if (users[whoIsInSystem()]->thisFilmIsWeak(i))
-            users[0]->costMoneyOfAdmin(0.8,users[whoIsInSystem()]->showFilmPricee(i));
+            users[0]->costMoneyOfAdmin(0.95,users[whoIsInSystem()]->showFilmPricee(i));
     }
     cout << OK << endl;
 }
 
 bool NetflixSystem::thisFilmHasBoughtByThisPerson(int filmID, int who){
-    for (int i=0;i<users[who]->numOfBoughtFilms();i++){
-        if (users[who]->showFilmBoughtId(i) == filmID){
+    for (int i=0;i<users[who]->numOfBoughtFilms();i++)
+        if (users[who]->showFilmBoughtId(i) == filmID)
             return true;
-        }
-    }
 }
 
 void NetflixSystem::swapTwoFilmsForRate(vector<Film*> &films,vector<int> &filmsVector,int i,int j){
@@ -974,7 +970,6 @@ void NetflixSystem::run(string line){
     try{
         if (line.length() != 0){
             int tst = 0;
-            int numOfRuns = 0;
             if (!isFourCommands(line)) throw BadRequest();
             if (thisStrExists(line,QUESTION)){
                 if (firstString(line) == POST && whatYouWant(line,POST) == SIGNUP && whatYouWant(line,SIGNUP) == QUESTION){
@@ -1001,7 +996,8 @@ void NetflixSystem::run(string line){
                     filterFilmsPublished(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == MONEY && whatYouWant(line,MONEY) == QUESTION && howManySpace(line) == 4){
+                if (firstString(line) == POST && whatYouWant(line,POST) == MONEY &&
+                 whatYouWant(line,MONEY) == QUESTION && howManySpace(line) == 4){
                     addMoney(line);
                     tst = 1;
                 }
@@ -1034,11 +1030,13 @@ void NetflixSystem::run(string line){
                     rateOnFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION && !thisStrExists(line,FILM_ID)){
+                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION &&
+                 !thisStrExists(line,FILM_ID)){
                     filterAllFilms(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION && thisStrExists(line,FILM_ID)){
+                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION &&
+                 thisStrExists(line,FILM_ID)){
                     showDetailsOfFilm(line);
                     tst = 1;
                 }

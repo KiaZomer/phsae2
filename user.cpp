@@ -125,7 +125,7 @@ void User::addSalary(int i){
         money += 0.8 * filmsPublished[i]->showPrice();  
 }
 
-void User::costMoneyOfAdmin(int percent, int price){
+void User::costMoneyOfAdmin(float percent, int price){
     money -= percent * price;
 }
 
