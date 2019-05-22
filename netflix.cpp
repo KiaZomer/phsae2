@@ -297,6 +297,7 @@ bool NetflixSystem::userMatchPassword(string line){
 void NetflixSystem::logOut(string line){
     if (users.size()==0) throw BadRequest();
     if (noOneIsInSystem()) throw BadRequest();
+    if (howManySpace(line)!= 1) throw BadRequest();
     setAllUsersOff();
     cout << OK << endl;
 }
@@ -669,8 +670,9 @@ void NetflixSystem::BuyFilm(string line){
                  showLengthOfThisFilm(stoi(whatYouWant(line,FILM_ID))),showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
                  stoi(whatYouWant(line,FILM_ID)),users[whoIsInSystem()]->showUserID());
                 users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf("User " + 
-                users[whoIsInSystem()]->showUserName() +" with id " + to_string(users[whoIsInSystem()]->showUserID()) + " buy your film " + 
-                 showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))) + " with id " + whatYouWant(line,FILM_ID) + ".\n");
+                users[whoIsInSystem()]->showUserName() +" with id " + 
+                 to_string(users[whoIsInSystem()]->showUserID()) + " buy your film " + 
+                  showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))) + " with id " + whatYouWant(line,FILM_ID) + ".\n");
     }
     cout << OK << endl;
 }
