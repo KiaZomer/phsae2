@@ -1,7 +1,10 @@
+#ifndef HASH_H
+#define HASH_H
 #include <array>
 #include <iterator>
 #include <cstdint>
-
+#include <string>
+#include <cmath>
 using namespace std;
 
 class HashMd5 {
@@ -234,3 +237,20 @@ const  array< uint32_t, 64> HashMd5::s_array_ = {
     4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,  4, 11, 16, 23,
     6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21,  6, 10, 15, 21
 };
+
+class hashByMe{
+public:
+    string changePassword(char pass){
+        string str = to_string(10 * pow(5,int(pass)) + 5 * pow(int (pass),3) + 6 * pow(int(pass),2) + 8 * int(pass));
+        return str;
+    }
+    string updatePassword(string password,string &up){
+        string passUp = "";
+        for (int i=0;i<password.length();i++)
+            passUp += changePassword(password[i]);
+        up.clear();
+        up = passUp;    
+        return up;    
+    }
+};
+#endif

@@ -91,6 +91,9 @@ public:
     bool hasBougthThis2Films(int i,int j);
     void setNetworkMoneyToMoney(int _money);
     void costMoneyOfAdmin(float percent,int price);
+    bool filmIsStrong(int filmID);
+    bool filmIsNormal(int filmID);
+    bool filmIsWeak(int filmID);
 protected:
     int userID;
     std::string userName;

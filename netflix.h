@@ -10,7 +10,7 @@ public:
     NetflixSystem(std::string email,std::string username,std::string pass,int age,int publisher, int insystem);
     void pushBackUser(std::string name, std::string email, std::string pass, int age, int publisher, int insystem);
     std::string firstString(std::string line);
-    bool isFourCommands(std::string line);
+    bool isTwoCommands(std::string line);
     bool isPublisher(int i);
     bool userExists(std::string wantSignUp);
     int howManySpace(std::string line);
@@ -75,6 +75,7 @@ public:
     int whoIsAdmin();
     void swapTwoFilmsForRate(std::vector<Film*> &films,std::vector<int> &filmsVector, int i,int j);
     bool hasBoughtThisFilm(int who, int filmID);
+    void addSalaryAdmin(int filmID,int i);
 private:
     std::vector<User*> users;
     std::map<int,User*> userWithId;

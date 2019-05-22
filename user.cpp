@@ -8,7 +8,7 @@ User::User(string _name,string _email,string pass,int _age, int _publisher, int 
     password = pass;
     age = _age;
     is_publisher = _publisher;
-    inSystem = insystem;
+    inSystem = insystem;   
     if (_name != "admin" && pass != "admin")
         userID = _id;
 }
@@ -135,6 +135,27 @@ void User::Delete_Film_ID(int id){
             filmsPublished[i]->gotDeleted();
     }
 }
+
+bool User::filmIsStrong(int filmID){
+    for (int i=0;i<filmsPublished.size();i++)
+        if (filmsPublished[i]->ShowFilmId() == filmID)
+            if (filmsPublished[i]->isStrong())
+                return true;
+}
+
+bool User::filmIsNormal(int filmID){
+    for (int i=0;i<filmsPublished.size();i++)
+        if (filmsPublished[i]->ShowFilmId() == filmID)
+            if (filmsPublished[i]->isNormal())
+                return true;
+}
+bool User::filmIsWeak(int filmID){
+    for (int i=0;i<filmsPublished.size();i++)
+        if (filmsPublished[i]->ShowFilmId() == filmID)
+            if (filmsPublished[i]->isWeak())
+                return true;
+}
+
 bool User::thisFilmIsStrong(int i){
     return filmsPublished[i]->isStrong();
 }
