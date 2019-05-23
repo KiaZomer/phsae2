@@ -131,9 +131,6 @@ int NetflixSystem::showIsPublisherWithID(int User_id){
         if (users[i]->showUserID() == User_id)
             return users[i]->showIsPublisher();
 }
-int NetflixSystem::showInSystemWithID(int User_id){
-    return 1;   
-}
 
 bool NetflixSystem::thisStrExists(string line,string str){
     for (int i=1;i<line.size();i++)
@@ -486,31 +483,33 @@ void NetflixSystem::EditFilm(string line){
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
     if (users[whoIsInSystem()]->thisFilmIdExists(stoi(whatYouWant(line,FILM_ID)))){
         if (howManySpace(line) < 4 || howManySpace(line) > 14) throw BadRequest();
+        int tst = 0;
             if (thisStrExists(line,NAME)){
                 users[whoIsInSystem()]->changeMovieName(whatYouWant(line,NAME),
                     users[whoIsInSystem()]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
-                cout << OK << endl;
+                tst = 1;
             }
             if (thisStrExists(line,YEAR)){
                 users[whoIsInSystem()]->changeMovieYear(stoi(whatYouWant(line,YEAR)),
                     users[whoIsInSystem()]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
-                cout << OK << endl;
+                tst = 1;
             }
             if (thisStrExists(line,DIRECTOR)){
                 users[whoIsInSystem()]->changeMovieDirector(whatYouWant(line,DIRECTOR),
                     users[whoIsInSystem()]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
-                cout << OK << endl;
+                tst = 1;
             }
             if (thisStrExists(line,LENGTH)){
                 users[whoIsInSystem()]->changeMovieLength(stoi(whatYouWant(line,LENGTH)),
                     users[whoIsInSystem()]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
-                cout << OK << endl;
+                tst = 1;
             }
             if (thisStrExists(line,SUMMARY)){
                 users[whoIsInSystem()]->changeMovieSummary(whatYouWant(line,SUMMARY),
                     users[whoIsInSystem()]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID)))); 
-                cout << OK << endl;
+                tst = 1;
             }   
+            if (tst == 1) cout << OK << endl;
     }
     else{
         if (stoi(whatYouWant(line,FILM_ID)) <= numOfAllFilms) throw PermissionDenied();
@@ -640,16 +639,21 @@ void NetflixSystem::showSeenNotfs(string line){
     if (howManySpace(line)!=5) throw BadRequest();
     if (!thisStrExists(line,LIMIT)) throw BadRequest();
     cout << TITLE_NOTFS << endl;
+    int num = 1;
     if (stoi(whatYouWant(line,LIMIT)) <= users[whoIsInSystem()]->numOfNotfs()){
         for (int i=users[whoIsInSystem()]->numOfNotfs() - 1;i >=
          users[whoIsInSystem()]->numOfNotfs() - stoi(whatYouWant(line,LIMIT));i--)
-            if (!users[whoIsInSystem()]->isUnSeen(i))
-                cout << users[whoIsInSystem()]->showNotf(i);                        
+            if (!users[whoIsInSystem()]->isUnSeen(i)){
+                cout << num << ". " << users[whoIsInSystem()]->showNotf(i);
+                num++;
+            }                        
     }
     else{
         for (int i=users[whoIsInSystem()]->numOfNotfs() - 1;i >= 0;i--)
-            if (!users[whoIsInSystem()]->isUnSeen(i))
-                cout << users[whoIsInSystem()]->showNotf(i);            
+            if (!users[whoIsInSystem()]->isUnSeen(i)){
+                cout << num << ". " << users[whoIsInSystem()]->showNotf(i);
+                num++; 
+            }           
     }
 }
 
@@ -713,8 +717,7 @@ void NetflixSystem::commentOnFilm(string line){
          + whatYouWant(line,FILM_ID) + ".\n";
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf(str);
 
-    users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
-     ->pushBackComment(numOfAllComments + 1,
+    users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->pushBackComment(numOfAllComments + 1,
         showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))),stoi(whatYouWant(line,FILM_ID)),
         whatYouWant(line,CONTENT),whoIsInSystem(),
         users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
@@ -884,6 +887,12 @@ void NetflixSystem::rateBasedOnRecommendation(vector<Film*> &filmsForRecommend,
         for (int j=i+1;j<filmsForRecommend.size();j++)
             if (recommenedations[i] < recommenedations[j])
                 swapTwoFilmsForRate(filmsForRecommend,recommenedations,i,j);
+    for (int i=0;i<filmsForRecommend.size();i++)
+        for (int j=i+1;j<filmsForRecommend.size();j++)
+            if (recommenedations[i] == recommenedations[j]){
+                if (filmsForRecommend[i]->ShowFilmId() > filmsForRecommend[j]->ShowFilmId())
+                    swapTwoFilmsForRate(filmsForRecommend,recommenedations,i,j);
+            }            
 }
 
 void NetflixSystem::showDetailsOfFilm(string line){
@@ -914,6 +923,9 @@ void NetflixSystem::showDetailsOfFilm(string line){
                   "Comments" << endl;
     for (int i=0;i<users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
      numOfCommentsOfThisFilmId(stoi(whatYouWant(line,FILM_ID)));i++){
+        if (users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->thisCmAvailble(stoi(whatYouWant(line,FILM_ID))
+         ,users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->showCmId(i,stoi(whatYouWant(line,FILM_ID))))){
+
         cout << users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
          ->showCmId(i,stoi(whatYouWant(line,FILM_ID)))
             << ". " <<users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
@@ -927,6 +939,7 @@ void NetflixSystem::showDetailsOfFilm(string line){
                     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
                      ->showCm(i,j,stoi(whatYouWant(line,FILM_ID))) << endl;
             }
+         }
     }
     cout << endl << "Recommendation Film" << endl <<
       "#. Film Id | Film Name | Film Length | Film Director" << endl;
@@ -1026,7 +1039,7 @@ void NetflixSystem::showMoneyOfThisUser(string line){
     if (users[whoIsInSystem()]->showUserName() == ADMIN && users[whoIsInSystem()]->showPassword() == ADMIN)
         cout << users[WHO_IS_ADMIN]->showMoney() << endl;
     else
-       cout << users[whoIsInSystem()]->showMoney() << endl;
+        cout << users[whoIsInSystem()]->showMoney() << endl;
 }
 
 void NetflixSystem::run(string line){

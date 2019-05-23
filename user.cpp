@@ -33,11 +33,14 @@ string User::showFollowingName(int i){ return followings[i]->showUserName(); }
 
 int User::numOfFollowings(){ return followings.size(); }
 
-void User::addFilms(string publisher,string movieName,string summary, string director,int year,int length, int price,int _id,int publisherid){
-    filmsPublished.push_back(new Film(publisher,movieName,summary,director,year, length, price,_id,publisherid));
+void User::addFilms(string publisher,string movieName,string summary,
+  string director,int year,int length, int price,int _id,int publisherid){
+    filmsPublished.push_back(new Film(publisher,movieName,summary,
+     director,year, length, price,_id,publisherid));
 }
 
-void User::PushBackFollower(string name,string email, string pass, int _age,int _publisher,int insystem, int _id){
+void User::PushBackFollower(string name,string email, string pass,
+ int _age,int _publisher,int insystem, int _id){
     followers.push_back(new User(name,email,pass,_age,_publisher,insystem,_id));
 }
 
@@ -59,7 +62,8 @@ int User::numOfCommentsOfThisFilmId(int filmID){
             return filmsPublished[i]->num_of_comments();
 }
 
-void User::pushBackComment(int comment_id,std::string film_name,int film_id,std::string Message,int commenter , int i){
+void User::pushBackComment(int comment_id,string film_name,int film_id,
+ string Message,int commenter , int i){
     filmsPublished[i]->newComment(comment_id,film_name,film_id,Message,commenter);
 }
 void User::setSeenThisNotf(int i){
@@ -80,7 +84,8 @@ int User::showMoney(){
     totalMoney = chargedMoney + money;
     return totalMoney;
 }
-void User::PushBackFollowing(string name,string email, string pass, int _age,int _publisher,int insystem, int _id){
+void User::PushBackFollowing(string name,string email, string pass, int _age,
+ int _publisher,int insystem, int _id){
     followings.push_back(new User(name,email,pass,_age,_publisher,insystem,_id));
 }
 
@@ -220,9 +225,11 @@ bool User::thisFilmIdExists(int idFilm){
     }
 }
 
-void User::addBuyListFilms(string publisher,string movieName,string summary,string director,int year,
+void User::addBuyListFilms(string publisher,string movieName,
+ string summary,string director,int year,
  int length, int price,int _id,int publisehrid){
-    filmsBought.push_back(new Film(publisher,movieName,summary,director,year, length, price,_id,publisehrid));
+    filmsBought.push_back(new Film(publisher,movieName,summary,
+     director,year, length, price,_id,publisehrid));
 }
 
 bool User::hasBougthThis2Films(int i,int j){
@@ -344,7 +351,8 @@ int User::showWhichFilmHasThisCmId(int filmID, int CmID){
 
 void User::PushBackReplyCmMessage(string str,int filmID, int cmID){
     filmsPublished[showWhichFilmHasThisCmId(filmID, cmID)]->
-     pushBackReplyMessage(filmsPublished[showWhichFilmHasThisCmId(filmID,cmID)]->whichCommentsHasThisId(cmID),str);
+     pushBackReplyMessage
+      (filmsPublished[showWhichFilmHasThisCmId(filmID,cmID)]->whichCommentsHasThisId(cmID),str);
 }
 
 int User::showCmId(int i, int filmID){

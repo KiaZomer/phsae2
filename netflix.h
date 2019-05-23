@@ -37,7 +37,6 @@ public:
     std::string showPassWithID(int User_id);
     int showAgeWithID(int User_id);
     int showIsPublisherWithID(int User_id);
-    int showInSystemWithID(int User_id);
     void showUnseenNotfs(std::string line);
     void BuyFilm(std::string line);
     bool thisFilmIDGotDeleted(int filmID);
@@ -84,5 +83,4 @@ private:
     int numOfAllFilms = 0;
     int numOfAllComments = 0;
 };
-
 #endif

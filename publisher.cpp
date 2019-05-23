@@ -5,7 +5,8 @@
 
 using namespace std;
 
-Publisher::Publisher(string _name,string _email,string pass,int _age, int _publisher, int insystem,int _id) 
+Publisher::Publisher(string _name,string _email,string pass,int _age,
+  int _publisher, int insystem,int _id) 
 : User(_name,_email,pass,_age,_publisher,insystem,_id) {}
 
 
