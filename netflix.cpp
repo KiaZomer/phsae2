@@ -820,23 +820,23 @@ void NetflixSystem::getSalary(string line){
                  users[allUser]->showFilmBoughtId(i)){
                     users[whoIsInSystem()]->addSalary(published);
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsStrong(users[whoIsInSystem()]->showFilmId(published)))
+                        ->filmIsStrong(users[whoIsInSystem()]->showFilmId(published)))
                         users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.95,
-                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
-                          ->showFilmId(published)));
+                        users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                        showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
+                        ->showFilmId(published)));
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsNormal(users[whoIsInSystem()]->showFilmId(published)))
+                        ->filmIsNormal(users[whoIsInSystem()]->showFilmId(published)))
                         users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.9,
-                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
-                          ->showFilmId(published)));
+                        users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                        showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
+                        ->showFilmId(published)));
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsWeak(users[whoIsInSystem()]->showFilmId(published))) 
+                        ->filmIsWeak(users[whoIsInSystem()]->showFilmId(published))) 
                         users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.8,
-                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm
-                          (users[whoIsInSystem()]->showFilmId(published)));
+                        users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                        showFilmId(published))]->showPriceFilm
+                        (users[whoIsInSystem()]->showFilmId(published)));
                 }
     cout << OK << endl;
 }
@@ -923,9 +923,10 @@ void NetflixSystem::showDetailsOfFilm(string line){
                   "Comments" << endl;
     for (int i=0;i<users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
      numOfCommentsOfThisFilmId(stoi(whatYouWant(line,FILM_ID)));i++){
-        if (users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->thisCmAvailble(stoi(whatYouWant(line,FILM_ID))
-         ,users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->showCmId(i,stoi(whatYouWant(line,FILM_ID))))){
-
+        if (users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
+         ->thisCmAvailble(stoi(whatYouWant(line,FILM_ID))
+         ,users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
+          ->showCmId(i,stoi(whatYouWant(line,FILM_ID))))){
         cout << users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
          ->showCmId(i,stoi(whatYouWant(line,FILM_ID)))
             << ". " <<users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
@@ -939,7 +940,7 @@ void NetflixSystem::showDetailsOfFilm(string line){
                     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
                      ->showCm(i,j,stoi(whatYouWant(line,FILM_ID))) << endl;
             }
-         }
+        }
     }
     cout << endl << "Recommendation Film" << endl <<
       "#. Film Id | Film Name | Film Length | Film Director" << endl;
