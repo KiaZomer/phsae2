@@ -58,18 +58,21 @@ const string MIN_YEAR = "min_year";
 const string TITLE_FILTER_PUBLISHED = "#. Film Id | Film Name | Film Length | Film price | Rate | Production Year | Film Director";
 const string PURCHASED = "purchased";
 const string DELETE_FILMS = "delete_films";
+const int WHO_IS_ADMIN = 0;
 
 NetflixSystem::~NetflixSystem(){
     for (int i=0;i<users.size();i++)
         delete users[i];
 }
 
-NetflixSystem::NetflixSystem(std::string email,std::string username,std::string pass,int age,int publisher, int insystem){
+NetflixSystem::NetflixSystem(std::string email,std::string username,std::string pass,int age,
+ int publisher, int insystem){
     users.push_back(new User(username,email,pass,age,publisher,0,0));
 }
 
 
-void NetflixSystem::pushBackUser(string name, string email, string pass, int age, int publisher, int insystem){ 
+void NetflixSystem::pushBackUser(string name, string email, string pass, int age,
+ int publisher, int insystem){ 
     users.push_back(new User(name,email,pass,age,publisher,1,users.size()));
 }
 
@@ -129,9 +132,7 @@ int NetflixSystem::showIsPublisherWithID(int User_id){
             return users[i]->showIsPublisher();
 }
 int NetflixSystem::showInSystemWithID(int User_id){
-    for (int i=0;i<users.size();i++)
-        if (users[i]->showUserID() == User_id)
-            return users[i]->showInSystem();
+    return 1;   
 }
 
 bool NetflixSystem::thisStrExists(string line,string str){
@@ -243,7 +244,8 @@ int NetflixSystem::howManySpace(string line){
     if (line[0] == ' ')
         numSpace--;
     for (int i = 1; i <line.size() - 1;i++)
-        if ((line[i] == ' ' && line[i-1] != ' ' && line[i+1]!= ' ') || (line[i]==' ' && line[i+1] !=' ' &&line[i-1]==' '))
+        if ((line[i] == ' ' && line[i-1] != ' ' && line[i+1]!= ' ') ||
+         (line[i]==' ' && line[i+1] !=' ' &&line[i-1]==' '))
             numSpace++;
     return numSpace;
 }
@@ -275,7 +277,8 @@ bool NetflixSystem::forRateOrCmThisFilmHasBougth(int who, int filmID){
 
 
 string NetflixSystem::whatYouWant(string line,string str){
-    return line.substr(firstChar(line,str),lastChar(line,firstChar(line,str)) + 1 - firstChar(line,str));
+    return line.substr(firstChar(line,str),lastChar(line,firstChar(line,str))
+     + 1 - firstChar(line,str));
 }
 
 bool NetflixSystem::thisCmIsAvailble(int filmID, int cmID){
@@ -307,44 +310,38 @@ void NetflixSystem::filterFilmsPublished(string line){
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
     if (howManySpace(line) < 1 || howManySpace(line) > 14) throw BadRequest();
     vector<Film*> filmsPublishedfilter;
-    for (int i=0;i<users[whoIsInSystem()]->numOfFilms();i++){
+    for (int i=0;i<users[whoIsInSystem()]->numOfFilms();i++)
         filmsPublishedfilter.push_back(users[whoIsInSystem()]->returnFilms(i));
-    }
     if (thisStrExists(line,NAME))
-        for (int i=0;i<filmsPublishedfilter.size();i++){
+        for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showName() != whatYouWant(line,NAME)){
                 filmsPublishedfilter.erase(filmsPublishedfilter.begin() + i);
                 i--;
             }
-        }
-    if (thisStrExists(line,PRICE)){
+    if (thisStrExists(line,PRICE))
         for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showPrice() != stoi(whatYouWant(line,PRICE))){
                 filmsPublishedfilter.erase(filmsPublishedfilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,DIRECTOR)){
+    if (thisStrExists(line,DIRECTOR))
         for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showDirector() != whatYouWant(line,DIRECTOR)){
                 filmsPublishedfilter.erase(filmsPublishedfilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,MAX_YEAR)){
+    if (thisStrExists(line,MAX_YEAR))
         for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showYear() > stoi(whatYouWant(line,MAX_YEAR))){
                 filmsPublishedfilter.erase(filmsPublishedfilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,MIN_YEAR)){
+    if (thisStrExists(line,MIN_YEAR))
         for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showYear() < stoi(whatYouWant(line,MIN_YEAR))){
                 filmsPublishedfilter.erase(filmsPublishedfilter.begin() + i);
                 i--;
             }
-    }
     if (thisStrExists(line,MIN_RATE))
         for (int i=0;i<filmsPublishedfilter.size();i++)
             if (filmsPublishedfilter[i]->showRate() < stoi(whatYouWant(line,MIN_RATE))){
@@ -358,10 +355,13 @@ void NetflixSystem::filterFilmsPublished(string line){
         }
     cout << TITLE_FILTER_PUBLISHED << endl;
     for (int i=0;i<filmsPublishedfilter.size();i++)
-        cout <<  i+1 << ". " << filmsPublishedfilter[i]->ShowFilmId() << " | " << filmsPublishedfilter[i]->showName()
-            << " | " << filmsPublishedfilter[i]->showLength() << " | " << filmsPublishedfilter[i]->showPrice() << " | " <<
+        cout <<  i+1 << ". " << filmsPublishedfilter[i]->ShowFilmId() << " | " <<
+         filmsPublishedfilter[i]->showName()
+            << " | " << filmsPublishedfilter[i]->showLength() << " | " <<
+             filmsPublishedfilter[i]->showPrice() << " | " <<
              filmsPublishedfilter[i]->showRate()
-            << " | " << filmsPublishedfilter[i]->showYear() << " | " << filmsPublishedfilter[i]->showDirector() << endl;
+            << " | " << filmsPublishedfilter[i]->showYear() << " | " <<
+             filmsPublishedfilter[i]->showDirector() << endl;
     filmsPublishedfilter.clear();                 
 }
 
@@ -450,7 +450,8 @@ void NetflixSystem::signUp(string line){
         cout << OK << endl;                
     }
     if (howManySpace(line)==12){
-        if (whatYouWant(line,PUBLISHER) != TRUEE && whatYouWant(line,PUBLISHER)!=FALSEE) throw BadRequest();
+        if (whatYouWant(line,PUBLISHER) != TRUEE && 
+         whatYouWant(line,PUBLISHER)!=FALSEE) throw BadRequest();
         if (whatYouWant(line,PUBLISHER) == TRUEE){
             setAllUsersOff();
             hash.update(whatYouWant(line,PASSWORD).begin(),whatYouWant(line,PASSWORD).end());
@@ -521,19 +522,21 @@ void NetflixSystem::PostFilm(string line){
     if (users.size() == 0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 14) throw BadRequest();
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
-    if (thisStrExists(line,NAME) && thisStrExists(line,LENGTH) && thisStrExists(line,YEAR) && thisStrExists(line,PRICE) &&
+    if (thisStrExists(line,NAME) && thisStrExists(line,LENGTH) && thisStrExists(line,YEAR) &&
+     thisStrExists(line,PRICE) &&
         thisStrExists(line,SUMMARY) && thisStrExists(line,DIRECTOR)){
         users[whoIsInSystem()]->addFilms(users[whoIsInSystem()]->showPublisher()
             ,whatYouWant(line,NAME),whatYouWant(line,SUMMARY),
             whatYouWant(line,DIRECTOR),stoi(whatYouWant(line,YEAR)),
-            stoi(whatYouWant(line,LENGTH)),stoi(whatYouWant(line,PRICE)),numOfAllFilms + 1,users[whoIsInSystem()]->showUserID());
-        for (int i=0;i<users[whoIsInSystem()]->numOfFollowers();i++){
-            users[i]->PushBackNotf("Publisher " + users[whoIsInSystem()]->showUserName() + " with id " +
+            stoi(whatYouWant(line,LENGTH)),stoi(whatYouWant(line,PRICE)),numOfAllFilms + 1,
+             users[whoIsInSystem()]->showUserID());
+        for (int i=0;i<users[whoIsInSystem()]->numOfFollowers();i++)
+            users[i]->PushBackNotf("Publisher " + users[whoIsInSystem()]->showUserName() +
+             " with id " +
             to_string(users[whoIsInSystem()]->showUserID()) + " register new film.\n"); 
-        }
         numOfAllFilms++;
         cout << OK << endl; 
-    } else throw BadRequest();  
+    }else throw BadRequest();  
 }
 
 
@@ -543,8 +546,10 @@ void NetflixSystem::deleteFilmid(string line){
     if (!thisStrExists(line,FILM_ID)) throw BadRequest();
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
     if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms) throw NotFound();
-    if (!users[whoIsInSystem()]->thisFilmIdExists(stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
-    if (!users[whoIsInSystem()]->thisFilmIsAvailble(stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
+    if (!users[whoIsInSystem()]->thisFilmIdExists
+     (stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
+    if (!users[whoIsInSystem()]->thisFilmIsAvailble
+     (stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
     users[whoIsInSystem()]->Delete_Film_ID(stoi(whatYouWant(line,FILM_ID)));
     cout << OK << endl;
 }
@@ -553,40 +558,45 @@ void NetflixSystem::deleteFilmid(string line){
 void NetflixSystem::addMoney(string line){
     if (users.size()==0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 4) throw BadRequest();
-    users[whoIsInSystem()]->addAmountMoney(stoi(whatYouWant(line,AMOUNT)));
+    users[whoIsInSystem()]->addChargedMoney(stoi(whatYouWant(line,AMOUNT)));
     cout << OK << endl;
 }
 
 bool NetflixSystem::thisFilmIDGotDeleted(int filmID){
     for (int i=0;i<users.size();i++)
-        for (int j=0;j<users[i]->numOfFilms();j++){
+        for (int j=0;j<users[i]->numOfFilms();j++)
             if (users[i]->showFilmId(j) == filmID)
                 if (!users[i]->thisFilmIsAvailble(filmID))
                     return true;
-        }
 }   
 
 void NetflixSystem::FollowPublisher(string line){
     if (users.size()==0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 4) throw BadRequest();
-    if (stoi(whatYouWant(line,USER_ID))>users.size()) throw NotFound();
-    if (!isPublisher(stoi(whatYouWant(line,USER_ID)) - 1)) throw PermissionDenied();
+    if (stoi(whatYouWant(line,USER_ID))>=users.size() ||
+     stoi(whatYouWant(line,USER_ID)) <= 0) throw NotFound();
+    if (!isPublisher(stoi(whatYouWant(line,USER_ID)))) throw PermissionDenied();
     if (!thisStrExists(line,USER_ID)) throw BadRequest();
     int checkIsFollowing = 0;
     for (int i=0;i<users[whoIsInSystem()]->numOfFollowings();i++)
-        if (showUserNameWithID(stoi(whatYouWant(line,USER_ID))) == users[whoIsInSystem()]->showFollowingName(i))
+        if (showUserNameWithID(stoi(whatYouWant(line,USER_ID))) == 
+         users[whoIsInSystem()]->showFollowingName(i))
             checkIsFollowing = 1;
-    if (checkIsFollowing == 0){        
-        users[stoi(whatYouWant(line,USER_ID))-1]->PushBackFollower(users[whoIsInSystem()]->showUserName(),
+    if (checkIsFollowing == 0){  
+        users[stoi(whatYouWant(line,USER_ID))]->PushBackFollower
+         (users[whoIsInSystem()]->showUserName(),
             users[whoIsInSystem()]->showEmail(),
             users[whoIsInSystem()]->showPassword(),users[whoIsInSystem()]->showAge(),
             users[whoIsInSystem()]->showIsPublisher(),1,users[whoIsInSystem()]->showUserID());
-        users[whoIsInSystem()]->PushBackFollowing(showUserNameWithID(stoi(whatYouWant(line,USER_ID))),
-            showMailWithUserID(stoi(whatYouWant(line,USER_ID))),
-            showPassWithID(stoi(whatYouWant(line,USER_ID))),showAgeWithID(stoi(whatYouWant(line,USER_ID))),
-            showIsPublisherWithID(stoi(whatYouWant(line,USER_ID))),
-            showInSystemWithID(stoi(whatYouWant(line,USER_ID))),stoi(whatYouWant(line,USER_ID)));    
-        users[stoi(whatYouWant(line,USER_ID)) - 1]->PushBackNotf(( "User " + (users[whoIsInSystem()]->showUserName()) + " with id " 
+        users[whoIsInSystem()]->PushBackFollowing
+         (users[stoi(whatYouWant(line,USER_ID))]->showUserName(),
+            users[stoi(whatYouWant(line,USER_ID))]->showEmail(),
+            users[stoi(whatYouWant(line,USER_ID))]->showUserName(),
+             users[stoi(whatYouWant(line,USER_ID))]->showAge(),
+            users[stoi(whatYouWant(line,USER_ID))]->showIsPublisher(),
+            0,stoi(whatYouWant(line,USER_ID)));
+        users[stoi(whatYouWant(line,USER_ID))]->PushBackNotf(( "User " + 
+         (users[whoIsInSystem()]->showUserName()) + " with id " 
         + to_string(users[whoIsInSystem()]->showUserID()) + " follow you.\n"));    
     } 
     cout << OK << endl;
@@ -598,7 +608,8 @@ void NetflixSystem::showFollowers(string line){
     if (howManySpace(line)!=1) throw BadRequest();
     cout << TITLE_FOLLOWERS << endl;
     for (int i=0;i<users[whoIsInSystem()]->numOfFollowers();i++){
-        cout << i+1 << ". " << users[whoIsInSystem()]->showFollowerId(i) << " | " << users[whoIsInSystem()]->showFollowerName(i) 
+        cout << i+1 << ". " << users[whoIsInSystem()]->showFollowerId(i) << " | " <<
+         users[whoIsInSystem()]->showFollowerName(i) 
             << " | " << users[whoIsInSystem()]->showFollowerEmail(i) << endl;
     }
 }
@@ -630,7 +641,8 @@ void NetflixSystem::showSeenNotfs(string line){
     if (!thisStrExists(line,LIMIT)) throw BadRequest();
     cout << TITLE_NOTFS << endl;
     if (stoi(whatYouWant(line,LIMIT)) <= users[whoIsInSystem()]->numOfNotfs()){
-        for (int i=users[whoIsInSystem()]->numOfNotfs() - 1;i >= users[whoIsInSystem()]->numOfNotfs() - stoi(whatYouWant(line,LIMIT));i--)
+        for (int i=users[whoIsInSystem()]->numOfNotfs() - 1;i >=
+         users[whoIsInSystem()]->numOfNotfs() - stoi(whatYouWant(line,LIMIT));i--)
             if (!users[whoIsInSystem()]->isUnSeen(i))
                 cout << users[whoIsInSystem()]->showNotf(i);                        
     }
@@ -655,24 +667,31 @@ void NetflixSystem::BuyFilm(string line){
     if (users.size() == 0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line)!=4) throw BadRequest();
     if (!thisStrExists(line,FILM_ID)) throw BadRequest();
-    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
-    if (users[whoIsInSystem()]->showMoney() < showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
+    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms ||
+     thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
+    if (users[whoIsInSystem()]->showMoney() < showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))))
+        throw PermissionDenied();
     int checkHasBought = 0;
     for (int i=0;i<users[whoIsInSystem()]->numOfBoughtFilms();i++)
         if (users[whoIsInSystem()]->showFilmBoughtId(i) == stoi(whatYouWant(line,FILM_ID)))
             checkHasBought = 1;
             if (checkHasBought == 0){
-                users[0]->addAmountMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));  
+                users[WHO_IS_ADMIN]->addAmountMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));  
                 users[whoIsInSystem()]->costMoney(showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))));
-                users[whoIsInSystem()]->addBuyListFilms(showPublisherOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
-                 showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))),showSummaryOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
-                 showDirectorOfThisFilm(stoi(whatYouWant(line,FILM_ID))),showYearOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
-                 showLengthOfThisFilm(stoi(whatYouWant(line,FILM_ID))),showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                users[whoIsInSystem()]->addBuyListFilms
+                 (showPublisherOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                 showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                  showSummaryOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                 showDirectorOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                  showYearOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                 showLengthOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
+                  showPriceOfThisFilm(stoi(whatYouWant(line,FILM_ID))),
                  stoi(whatYouWant(line,FILM_ID)),users[whoIsInSystem()]->showUserID());
                 users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf("User " + 
                 users[whoIsInSystem()]->showUserName() +" with id " + 
                  to_string(users[whoIsInSystem()]->showUserID()) + " buy your film " + 
-                  showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))) + " with id " + whatYouWant(line,FILM_ID) + ".\n");
+                  showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))) + " with id "
+                   + whatYouWant(line,FILM_ID) + ".\n");
     }
     cout << OK << endl;
 }
@@ -681,19 +700,25 @@ void NetflixSystem::commentOnFilm(string line){
     if (users.size() == 0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 6) throw BadRequest();
     if (!thisStrExists(line,FILM_ID)) throw BadRequest();
-    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID))) ||
+    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms ||
+      thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID))) ||
         stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
-    if (!forRateOrCmThisFilmHasBougth(whoIsInSystem(),stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
+    if (!forRateOrCmThisFilmHasBougth(whoIsInSystem(),
+     stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
     string str = "User " + users[whoIsInSystem()]->showUserName() + 
-        " with id " + to_string(users[whoIsInSystem()]->showUserID()) + " comment on your film " + 
+        " with id " + to_string(users[whoIsInSystem()]->showUserID()) +
+         " comment on your film " + 
         (users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
-        showNameFilmwithFilmId(stoi(whatYouWant(line,FILM_ID)))) + " with id " + whatYouWant(line,FILM_ID) + ".\n";
+        showNameFilmwithFilmId(stoi(whatYouWant(line,FILM_ID)))) + " with id "
+         + whatYouWant(line,FILM_ID) + ".\n";
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf(str);
 
-    users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->pushBackComment(numOfAllComments + 1,
+    users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
+     ->pushBackComment(numOfAllComments + 1,
         showMovieNameOfThisFilm(stoi(whatYouWant(line,FILM_ID))),stoi(whatYouWant(line,FILM_ID)),
         whatYouWant(line,CONTENT),whoIsInSystem(),
-        users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
+        users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
+         ->WhichFilmHasThisID(stoi(whatYouWant(line,FILM_ID))));
     numOfAllComments++;  
     cout << OK << endl; 
 }
@@ -703,25 +728,33 @@ void NetflixSystem::DeleteComment(string line){
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
     if (howManySpace(line) != 6) throw BadRequest();
     if (!thisStrExists(line,COMMENT_ID)) throw BadRequest();
-    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
+    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || stoi(whatYouWant(line,FILM_ID)) < 0)
+        throw NotFound();
     if (stoi(whatYouWant(line,COMMENT_ID)) > numOfAllComments) throw NotFound();
-    if (!thisCmIsAvailble(stoi(whatYouWant(line,FILM_ID)),stoi(whatYouWant(line,COMMENT_ID)))) throw NotFound();
+    if (!thisCmIsAvailble(stoi(whatYouWant(line,FILM_ID)),
+     stoi(whatYouWant(line,COMMENT_ID)))) throw NotFound();
     if (!users[whoIsInSystem()]->thisUserHasThisCmId(stoi(whatYouWant(line,COMMENT_ID)),
         stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
-    if (showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID))) != whoIsInSystem()) throw PermissionDenied();
-    users[whoIsInSystem()]->setUnavailbleThisComment(stoi(whatYouWant(line,COMMENT_ID)),stoi(whatYouWant(line,FILM_ID)));
+    if (showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID))) != whoIsInSystem())
+        throw PermissionDenied();
+    users[whoIsInSystem()]->setUnavailbleThisComment(stoi(whatYouWant(line,COMMENT_ID)),
+     stoi(whatYouWant(line,FILM_ID)));
     cout << OK << endl;   
 }
 
 void NetflixSystem::replyOnComment(string line){
     if (users.size() == 0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 8) throw BadRequest();
-    if (!thisStrExists(line,FILM_ID) || !thisStrExists(line,COMMENT_ID) || !thisStrExists(line,CONTENT)) throw BadRequest();
+    if (!thisStrExists(line,FILM_ID) || !thisStrExists(line,COMMENT_ID) ||
+     !thisStrExists(line,CONTENT)) throw BadRequest();
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
-    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
+    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms ||
+     stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
     if (stoi(whatYouWant(line,COMMENT_ID)) > numOfAllComments) throw NotFound();
-    if (!thisCmIsAvailble(stoi(whatYouWant(line,FILM_ID)),stoi(whatYouWant(line,COMMENT_ID)))) throw NotFound();
-    if (showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID))) != whoIsInSystem()) throw PermissionDenied();
+    if (!thisCmIsAvailble(stoi(whatYouWant(line,FILM_ID)),
+     stoi(whatYouWant(line,COMMENT_ID)))) throw NotFound();
+    if (showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))
+     != whoIsInSystem()) throw PermissionDenied();
     if (!users[whoIsInSystem()]->thisUserHasThisCmId(stoi(whatYouWant(line,COMMENT_ID)),
         stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied();
     if (!thisFilmHastThisCmId(stoi(whatYouWant(line,FILM_ID)),
@@ -740,12 +773,15 @@ void NetflixSystem::rateOnFilm(string line){
     if (users.size() ==0 || noOneIsInSystem()) throw PermissionDenied();
     if (howManySpace(line) != 6 ) throw BadRequest();
     if (!thisStrExists(line,FILM_ID)) throw BadRequest();
-    if (thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID))) || stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || 
+    if (thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID))) ||
+     stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || 
         stoi(whatYouWant(line,FILM_ID)) <=0) throw NotFound();
-    if (!forRateOrCmThisFilmHasBougth(whoIsInSystem(),stoi(whatYouWant(line,FILM_ID)))) throw PermissionDenied(); 
+    if (!forRateOrCmThisFilmHasBougth(whoIsInSystem(),stoi(whatYouWant(line,FILM_ID))))
+        throw PermissionDenied(); 
     if (stof(whatYouWant(line,SCORE)) > 10 || stof(whatYouWant(line,SCORE)) < 0) throw BadRequest();
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
-     addRateToMovie(stoi(whatYouWant(line,FILM_ID)),stof(whatYouWant(line,SCORE)),users[whoIsInSystem()]->showUserID());
+     addRateToMovie(stoi(whatYouWant(line,FILM_ID)),stof(whatYouWant(line,SCORE)),
+      users[whoIsInSystem()]->showUserID());
     users[whoIsInSystem()]->addRateToMovie(stoi(whatYouWant(line,FILM_ID)),
     stof(whatYouWant(line,SCORE)),users[whoIsInSystem()]->showUserID());
     users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->PushBackNotf("User " +
@@ -759,11 +795,14 @@ void NetflixSystem::rateOnFilm(string line){
 
 void NetflixSystem::addSalaryAdmin(int filmID, int whichFilm){
     if (users[showWhichUserWithFilmId(filmID)]->thisFilmIsStrong(whichFilm))
-        users[0]->addAmountMoney(0.05 * users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));
+        users[WHO_IS_ADMIN]->addAmountMoney(0.05 *
+         users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));
     if (users[showWhichUserWithFilmId(filmID)]->thisFilmIsNormal(whichFilm))
-        users[0]->addAmountMoney(0.1 * users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));
+        users[WHO_IS_ADMIN]->addAmountMoney(0.1 *
+         users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));
     if (users[showWhichUserWithFilmId(filmID)]->thisFilmIsWeak(whichFilm))
-        users[0]->addAmountMoney(0.2 * users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));       
+        users[WHO_IS_ADMIN]->addAmountMoney(0.2 *
+         users[showWhichUserWithFilmId(filmID)]->showPriceFilm(filmID));       
 }
 
 void NetflixSystem::getSalary(string line){
@@ -771,31 +810,31 @@ void NetflixSystem::getSalary(string line){
     if (howManySpace(line) != 1) throw BadRequest();
     if (!isPublisher(whoIsInSystem())) throw PermissionDenied();
     users[whoIsInSystem()]->setMoneyToZero();
-    for (int published=0;published<users[whoIsInSystem()]->numOfFilms();published++){
-        for (int allUser=0;allUser<users.size();allUser++){
-            for (int i=0;i<users[allUser]->numOfBoughtFilms();i++){
-                if (users[whoIsInSystem()]->showFilmId(published) == users[allUser]->showFilmBoughtId(i)){
+    for (int published=0;published<users[whoIsInSystem()]->numOfFilms();published++)
+        for (int allUser=0;allUser<users.size();allUser++)
+            for (int i=0;i<users[allUser]->numOfBoughtFilms();i++)
+                if (users[whoIsInSystem()]->showFilmId(published) ==
+                 users[allUser]->showFilmBoughtId(i)){
                     users[whoIsInSystem()]->addSalary(published);
-
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsStrong(users[whoIsInSystem()]->showFilmId(published))) {
-                        users[0]->costMoneyOfAdmin(0.95,users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]->showFilmId(published)));
-                    }
+                     ->filmIsStrong(users[whoIsInSystem()]->showFilmId(published)))
+                        users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.95,
+                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
+                          ->showFilmId(published)));
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsNormal(users[whoIsInSystem()]->showFilmId(published))) {
-                        users[0]->costMoneyOfAdmin(0.9,users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]->showFilmId(published)));
-                    }
+                     ->filmIsNormal(users[whoIsInSystem()]->showFilmId(published)))
+                        users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.9,
+                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]
+                          ->showFilmId(published)));
                     if (users[showWhichUserWithFilmId(users[whoIsInSystem()]->showFilmId(published))]
-                     ->filmIsWeak(users[whoIsInSystem()]->showFilmId(published))) {
-                        users[0]->costMoneyOfAdmin(0.8,users[showWhichUserWithFilmId(users[whoIsInSystem()]->
-                         showFilmId(published))]->showPriceFilm(users[whoIsInSystem()]->showFilmId(published)));
-                    }
+                     ->filmIsWeak(users[whoIsInSystem()]->showFilmId(published))) 
+                        users[WHO_IS_ADMIN]->costMoneyOfAdmin(0.8,
+                         users[showWhichUserWithFilmId(users[whoIsInSystem()]->
+                         showFilmId(published))]->showPriceFilm
+                          (users[whoIsInSystem()]->showFilmId(published)));
                 }
-            }
-        }
-    }
     cout << OK << endl;
 }
 
@@ -822,7 +861,8 @@ bool NetflixSystem::hasBoughtThisFilm(int who, int filmID){
             return true;
 }
 
-void NetflixSystem::rateBasedOnRecommendation(vector<Film*> &filmsForRecommend,string line, int& which){
+void NetflixSystem::rateBasedOnRecommendation(vector<Film*> &filmsForRecommend,
+ string line, int& which){
     recommenedations.clear();
     for (int num=0;num<users.size();num++)
         if (isPublisher(num))
@@ -851,8 +891,10 @@ void NetflixSystem::showDetailsOfFilm(string line){
     if (howManySpace(line) != 4 ) throw BadRequest();
     if (!users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]->
      thisFilmIdExists(stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
-    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms || stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
-    if (thisFilmHasBoughtByThisPerson(stoi(whatYouWant(line,FILM_ID)),whoIsInSystem())) throw PermissionDenied();
+    if (stoi(whatYouWant(line,FILM_ID)) > numOfAllFilms ||
+      stoi(whatYouWant(line,FILM_ID)) < 0) throw NotFound();
+    if (thisFilmHasBoughtByThisPerson(stoi(
+         whatYouWant(line,FILM_ID)),whoIsInSystem())) throw PermissionDenied();
     if (thisFilmIDGotDeleted(stoi(whatYouWant(line,FILM_ID)))) throw NotFound();
     cout << "Details of Film " <<  users[showWhichUserWithFilmId(stoi(whatYouWant(line,FILM_ID)))]
         ->showNameFilmwithFilmId(stoi(whatYouWant(line,FILM_ID))) << endl << "Id = " <<
@@ -886,7 +928,8 @@ void NetflixSystem::showDetailsOfFilm(string line){
                      ->showCm(i,j,stoi(whatYouWant(line,FILM_ID))) << endl;
             }
     }
-    cout << endl << "Recommendation Film" << endl << "#. Film Id | Film Name | Film Length | Film Director" << endl;
+    cout << endl << "Recommendation Film" << endl <<
+      "#. Film Id | Film Name | Film Length | Film Director" << endl;
     vector<Film*> filmsForRankRate;
     int which = 0;
     rateBasedOnRecommendation(filmsForRankRate,line,which);
@@ -897,17 +940,17 @@ void NetflixSystem::showDetailsOfFilm(string line){
                 i--;
             }
     if (filmsForRankRate.size() > 4)
-        for (int i=0;i<4;i++){
-            cout << i+1 << ". " << filmsForRankRate[i]->ShowFilmId() << " | " << filmsForRankRate[i]->showName() <<
+        for (int i=0;i<4;i++)
+            cout << i+1 << ". " << filmsForRankRate[i]->ShowFilmId() << " | " <<
+              filmsForRankRate[i]->showName() <<
              " | " << filmsForRankRate[i]->showLength()
              << " | " << filmsForRankRate[i]->showDirector() << endl;
-        }
     else 
-        for (int i=0;i<filmsForRankRate.size();i++){
-            cout << i+1 << ". " << filmsForRankRate[i]->ShowFilmId() << " | " << filmsForRankRate[i]->showName() <<
+        for (int i=0;i<filmsForRankRate.size();i++)
+            cout << i+1 << ". " << filmsForRankRate[i]->ShowFilmId() << " | " <<
+              filmsForRankRate[i]->showName() <<
              " | " << filmsForRankRate[i]->showLength()
               << " | " << filmsForRankRate[i]->showDirector() << endl;
-        }
     filmsForRankRate.clear();
 }
 
@@ -925,34 +968,30 @@ void NetflixSystem::filterPurchasedFilms(string line){
                 i--;
             }
         }
-    if (thisStrExists(line,PRICE)){
+    if (thisStrExists(line,PRICE))
         for (int i=0;i<filmsPurchasedFilter.size();i++)
             if (filmsPurchasedFilter[i]->showPrice() != stoi(whatYouWant(line,PRICE))){
                 filmsPurchasedFilter.erase(filmsPurchasedFilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,DIRECTOR)){
+    if (thisStrExists(line,DIRECTOR))
         for (int i=0;i<filmsPurchasedFilter.size();i++)
             if (filmsPurchasedFilter[i]->showDirector() != whatYouWant(line,DIRECTOR)){
                 filmsPurchasedFilter.erase(filmsPurchasedFilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,MAX_YEAR)){
+    if (thisStrExists(line,MAX_YEAR))
         for (int i=0;i<filmsPurchasedFilter.size();i++)
             if (filmsPurchasedFilter[i]->showYear() > stoi(whatYouWant(line,MAX_YEAR))){
                 filmsPurchasedFilter.erase(filmsPurchasedFilter.begin() + i);
                 i--;
             }
-    }
-    if (thisStrExists(line,MIN_YEAR)){
+    if (thisStrExists(line,MIN_YEAR))
         for (int i=0;i<filmsPurchasedFilter.size();i++)
             if (filmsPurchasedFilter[i]->showYear() < stoi(whatYouWant(line,MIN_YEAR))){
                 filmsPurchasedFilter.erase(filmsPurchasedFilter.begin() + i);
                 i--;
             }
-    }
     if (thisStrExists(line,MIN_RATE))
         for (int i=0;i<filmsPurchasedFilter.size();i++)
             if (filmsPurchasedFilter[i]->showRate() < stof(whatYouWant(line,MIN_RATE))){
@@ -966,23 +1005,26 @@ void NetflixSystem::filterPurchasedFilms(string line){
         }
     cout << TITLE_FILTER_PUBLISHED << endl;
     for (int i=0;i<filmsPurchasedFilter.size();i++)
-        cout <<  i+1 << ". " << filmsPurchasedFilter[i]->ShowFilmId() << " | " << filmsPurchasedFilter[i]->showName()
-            << " | " << filmsPurchasedFilter[i]->showLength() << " | " << filmsPurchasedFilter[i]->showPrice() << " | "
+        cout <<  i+1 << ". " << filmsPurchasedFilter[i]->ShowFilmId() << " | " <<
+          filmsPurchasedFilter[i]->showName()
+            << " | " << filmsPurchasedFilter[i]->showLength() << " | " <<
+              filmsPurchasedFilter[i]->showPrice() << " | "
              << filmsPurchasedFilter[i]->showRate()
-              << " | " << filmsPurchasedFilter[i]->showYear() << " | " << filmsPurchasedFilter[i]->showDirector() << endl;
+              << " | " << filmsPurchasedFilter[i]->showYear() << " | " <<
+                filmsPurchasedFilter[i]->showDirector() << endl;
     filmsPurchasedFilter.clear();                 
 }
 
 
 void NetflixSystem::showMoneyOfThisUser(string line){
     if (users.size() == 0 || noOneIsInSystem()) throw PermissionDenied();
-    if (howManySpace(line) > 1) throw BadRequest();
-    string str = "admin";
+    if (howManySpace(line) != 1) throw BadRequest();
+    string str = ADMIN;
     HashMd5 hash;
     hash.update(str.begin(),str.end());
     hash.hex_digest(str);
     if (users[whoIsInSystem()]->showUserName() == ADMIN && users[whoIsInSystem()]->showPassword() == ADMIN)
-        cout << users[0]->showMoney() << endl;
+        cout << users[WHO_IS_ADMIN]->showMoney() << endl;
     else
        cout << users[whoIsInSystem()]->showMoney() << endl;
 }
@@ -993,27 +1035,33 @@ void NetflixSystem::run(string line){
             int tst = 0;
             if (!isTwoCommands(line)) throw BadRequest();
             if (thisStrExists(line,QUESTION)){
-                if (firstString(line) == POST && whatYouWant(line,POST) == SIGNUP && whatYouWant(line,SIGNUP) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == SIGNUP &&
+                 whatYouWant(line,SIGNUP) == QUESTION){
                     signUp(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == LOGIN && whatYouWant(line,LOGIN) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == LOGIN &&
+                 whatYouWant(line,LOGIN) == QUESTION){
                     Login(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == FILMS && whatYouWant(line,FILMS) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == FILMS &&
+                 whatYouWant(line,FILMS) == QUESTION){
                     PostFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == PUT_FILMS && whatYouWant(line,FILMS) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == PUT_FILMS &&
+                 whatYouWant(line,FILMS) == QUESTION){
                     EditFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == DELETE_FILMS && whatYouWant(line,FILMS) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == DELETE_FILMS &&
+                 whatYouWant(line,FILMS) == QUESTION){
                     deleteFilmid(line);   
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == PUBLISHED && whatYouWant(line,PUBLISHED) == QUESTION){
+                if (firstString(line) == GET && whatYouWant(line,GET) == PUBLISHED &&
+                 whatYouWant(line,PUBLISHED) == QUESTION){
                     filterFilmsPublished(line);
                     tst = 1;
                 }
@@ -1022,46 +1070,56 @@ void NetflixSystem::run(string line){
                     addMoney(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == FOLLOWERS && whatYouWant(line,FOLLOWERS) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == FOLLOWERS &&
+                 whatYouWant(line,FOLLOWERS) == QUESTION){
                     FollowPublisher(line); 
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == BUY && whatYouWant(line,BUY) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == BUY &&
+                 whatYouWant(line,BUY) == QUESTION){
                     BuyFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == NOTIFICATIONS && howManySpace(line)>1 &&
+                if (firstString(line) == GET && whatYouWant(line,GET) == NOTIFICATIONS &&
+                 howManySpace(line)>1 &&
                 whatYouWant(line,NOTIFICATIONS) == READ && whatYouWant(line,READ) == QUESTION){
                     showSeenNotfs(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == COMMENT && whatYouWant(line,COMMENT) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == COMMENT &&
+                 whatYouWant(line,COMMENT) == QUESTION){
                     commentOnFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == REPLIES && whatYouWant(line,REPLIES) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == REPLIES &&
+                 whatYouWant(line,REPLIES) == QUESTION){
                     replyOnComment(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == DELETE_CMS && whatYouWant(line,COMMENT) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == DELETE_CMS &&
+                 whatYouWant(line,COMMENT) == QUESTION){
                     DeleteComment(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == RATE && whatYouWant(line,RATE) == QUESTION){
+                if (firstString(line) == POST && whatYouWant(line,POST) == RATE &&
+                 whatYouWant(line,RATE) == QUESTION){
                     rateOnFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION &&
+                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS &&
+                 whatYouWant(line,FILMS) == QUESTION &&
                  !thisStrExists(line,FILM_ID)){
                     filterAllFilms(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS && whatYouWant(line,FILMS) == QUESTION &&
+                if (firstString(line) == GET && whatYouWant(line,GET) == FILMS &&
+                 whatYouWant(line,FILMS) == QUESTION &&
                  thisStrExists(line,FILM_ID)){
                     showDetailsOfFilm(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == PURCHASED && whatYouWant(line,PURCHASED) == QUESTION){
+                if (firstString(line) == GET && whatYouWant(line,GET) == PURCHASED &&
+                 whatYouWant(line,PURCHASED) == QUESTION){
                     filterPurchasedFilms(line);
                     tst = 1;
                 }
@@ -1083,11 +1141,13 @@ void NetflixSystem::run(string line){
                     filterFilmsPublished(line);
                     tst = 1;
                 }
-                if (firstString(line) == POST && whatYouWant(line,POST) == MONEY && howManySpace(line) == 1){
+                if (firstString(line) == POST && whatYouWant(line,POST) == MONEY &&
+                 howManySpace(line) == 1){
                     getSalary(line);
                     tst = 1;
                 }
-                if (firstString(line) == GET && whatYouWant(line,GET) == NOTIFICATIONS && howManySpace(line) ==1){ 
+                if (firstString(line) == GET && whatYouWant(line,GET) == NOTIFICATIONS &&
+                 howManySpace(line) ==1){ 
                     showUnseenNotfs(line);
                     tst = 1;
                 }

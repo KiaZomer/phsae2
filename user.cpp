@@ -9,8 +9,7 @@ User::User(string _name,string _email,string pass,int _age, int _publisher, int 
     age = _age;
     is_publisher = _publisher;
     inSystem = insystem;   
-    if (_name != "admin" && pass != "admin")
-        userID = _id;
+    userID = _id;
 }
 int User::showFollowerId(int i){return followers[i]->showUserID(); }
 string User::showFollowerName(int i){return followers[i]->showUserName();}
@@ -77,7 +76,10 @@ string User::showNotf(int i){
     return notifications[i];
 }
 
-int User::showMoney(){return money; }
+int User::showMoney(){
+    totalMoney = chargedMoney + money;
+    return totalMoney;
+}
 void User::PushBackFollowing(string name,string email, string pass, int _age,int _publisher,int insystem, int _id){
     followings.push_back(new User(name,email,pass,_age,_publisher,insystem,_id));
 }
@@ -127,6 +129,10 @@ void User::addSalary(int i){
 
 void User::costMoneyOfAdmin(float percent, int price){
     money -= percent * price;
+}
+
+void User::addChargedMoney(int _money){
+    chargedMoney += _money;
 }
 
 void User::Delete_Film_ID(int id){

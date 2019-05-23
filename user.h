@@ -94,11 +94,14 @@ public:
     bool filmIsStrong(int filmID);
     bool filmIsNormal(int filmID);
     bool filmIsWeak(int filmID);
+    void addChargedMoney(int _money);
 protected:
     int userID;
     std::string userName;
     std::string email;
     std::string password;
+    int totalMoney = 0;
+    int chargedMoney = 0;
     int money = 0;
     int age;
     int is_publisher = 0;
