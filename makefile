@@ -2,13 +2,13 @@ CC = g++
 FLAGS = -std=c++11
 COMPILE_FLAGS = $(FLAGS) -c
 
-a.out: main.o netflix.o user.o film.o comment.o exception.h hash.h publisher.o
-	$(CC) main.o netflix.o user.o film.o comment.o exception.h hash.h publisher.o $(FLAGS) -o a.out
+a.out: main.o netflix.o user.o film.o comment.o exception.h hash.h publisher.o defines.h
+	$(CC) main.o netflix.o user.o film.o comment.o exception.h hash.h publisher.o defines.h $(FLAGS) -o a.out
 
-main.o: main.cpp netflix.h
+main.o: main.cpp netflix.h defines.h
 	$(CC) $(COMPILE_FLAGS) main.cpp
 
-NetflixSystem.o: netflix.cpp netflix.h user.h hash.h
+NetflixSystem.o: netflix.cpp netflix.h user.h hash.h defines.h
 	$(CC) $(COMPILE_FLAGS) netflix.cpp
 
 user.o: user.cpp user.h film.h 
